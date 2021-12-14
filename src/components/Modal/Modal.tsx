@@ -31,7 +31,7 @@ export const Modal: React.FC<IModalProps> = ({
                 </div>
                 <div className="modal-footer">
                     {footer}
-                    <button className="button" onClick={closeAction}>Close</button>
+                    <button className="button button-warning" onClick={closeAction}>Close</button>
                 </div>
             </div>
         </div>

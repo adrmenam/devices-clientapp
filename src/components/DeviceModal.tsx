@@ -106,7 +106,7 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
     const modalFooter = (
         <>
             <button
-                className="button"
+                className="button button-main"
                 onClick={handleSaveDevice}
                 disabled={modalMethod !== ModalMethod.EDIT && (!isSystemNameValid || !isHddCapacityValid)}>
                 Save

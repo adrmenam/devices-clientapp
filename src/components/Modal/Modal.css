@@ -17,6 +17,9 @@
 
 .modal-header, .modal-footer {
     padding: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
 
 .modal-title {

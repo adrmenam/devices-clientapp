@@ -4,6 +4,7 @@ import {Device} from "../api/model/Device";
 import FILTERS from "../constants/filterConstants";
 import {ModalMethod} from "../constants/ModalMethod";
 import {DeviceModal} from "./DeviceModal";
+import {DeviceCard} from "./DeviceCard/DeviceCard";
 
 export const DevicesPage: React.FC = () => {
     const [devices, setDevices] = useState<Device[]>([]);
@@ -52,7 +53,7 @@ export const DevicesPage: React.FC = () => {
 
     return (
         <>
-            <>
+            <div className="filter-section">
                 <div>
                     Device Type:
                     <select
@@ -79,13 +80,11 @@ export const DevicesPage: React.FC = () => {
                         })}
                     </select>
                 </div>
-            </>
-
-            <div>
-                <button className="add-device-button" onClick={()=>handleShowModal(ModalMethod.ADD)}>Add Device</button>
             </div>
-
-            <table>
+            <div className="add-device-container">
+                <button className="button button-green" onClick={()=>handleShowModal(ModalMethod.ADD)}>Add Device</button>
+            </div>
+            <div>
                 {devices
                     .filter((device) => (selectedType!=='!') ? device.type===selectedType : true)
                     .sort((a, b) => {
@@ -99,18 +98,17 @@ export const DevicesPage: React.FC = () => {
                         }
                     })
                     .map((device:Device)=>{
+                        const actionButtons = (
+                            <>
+                                <button className="button button-main" onClick={()=>handleShowModal(ModalMethod.EDIT, device)}>Edit</button>
+                                <button className="button button-warning" onClick={()=>handleDeleteDevice(device)}>Delete</button>
+                            </>
+                        )
                         return (
-                            <tr key={device.id}>
-                                <td>{device.id}</td>
-                                <td>{device.system_name}</td>
-                                <td>{device.type}</td>
-                                <td>{device.hdd_capacity}</td>
-                                <td><button className="button" onClick={()=>handleShowModal(ModalMethod.EDIT, device)}>Edit</button></td>
-                                <td><button className="button" onClick={()=>handleDeleteDevice(device)}>Delete</button></td>
-                            </tr>
+                            <DeviceCard device={device} actionButtons={actionButtons}/>
                         )
                     })}
-            </table>
+            </div>
             <DeviceModal
                 showModal={showModal}
                 modalMethod={modalMethod}

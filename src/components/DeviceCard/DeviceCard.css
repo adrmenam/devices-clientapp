@@ -1,0 +1,35 @@
+.card {
+    font-family: "RM Neue", sans-serif;
+    font-size: 100%;
+    border: 2px solid aliceblue;
+    background-color: white;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-body {
+    width: 65%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 20px;
+}
+
+.card-item-name {
+    width: 50%;
+    font-weight: bold;
+}
+
+.card-item-details {
+    width: 50%;
+}
+
+.card-actions {
+    width: 35%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
