@@ -63,7 +63,7 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
                         value={selectedDevice?.type || FILTERS.TYPE_OPTIONS[1].value}
                         onChange={handleDeviceTypeChange}
                     >
-                        {FILTERS.TYPE_OPTIONS.filter(type => type.value!=='!').map(type=>{
+                        {FILTERS.TYPE_OPTIONS.filter(type => type.value!=='all').map(type=>{
                             return (
                                 <option key={type.value} value={type.value}>{type.label}</option>
                             )
