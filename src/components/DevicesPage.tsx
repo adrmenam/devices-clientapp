@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {deleteDevice, getDevices} from "../api/services/devicesService";
 import {Device} from "../api/model/Device";
 import FILTERS from "../constants/filterConstants";
-import {ModalMethod} from "../constants/ModalMethod";
 import {DeviceModal} from "./DeviceModal";
 import {DeviceCard} from "./DeviceCard/DeviceCard";
 
@@ -12,8 +11,6 @@ export const DevicesPage: React.FC = () => {
     const [selectedSort, setSelectedSort] = useState<string>(FILTERS.SORT_OPTIONS[0].value);
     const [selectedDevice, setSelectedDevice] = useState<Device>();
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [modalMethod, setModalMethod] = useState<ModalMethod>(ModalMethod.ADD);
-
 
     useEffect(()=>{
         fetchDevices();
@@ -25,8 +22,7 @@ export const DevicesPage: React.FC = () => {
         });
     }
 
-    const handleShowModal = (modalMethod: ModalMethod, device?: Device) => {
-        setModalMethod(modalMethod);
+    const handleShowModal = (device?: Device) => {
         if(!device){
             device = new Device();
         }
@@ -37,9 +33,9 @@ export const DevicesPage: React.FC = () => {
     const handleDeleteDevice = (device?: Device) => {
         if(device?.id){
             deleteDevice(device.id)
-                .catch(()=>alert("Device deletion failed"))
                 .then(()=>alert(`Device ${device?.system_name} deleted successfully`))
-                .then(fetchDevices);
+                .then(fetchDevices)
+                .catch(()=>alert("Device deletion failed"));
         }
     }
 
@@ -51,6 +47,20 @@ export const DevicesPage: React.FC = () => {
         fetchDevices();
     }
 
+    const filterAndSort = (devices: Device[]) => {
+        return devices.filter((device) => (selectedType!=='all') ? device.type===selectedType : true)
+            .sort((a, b) => {
+                switch(selectedSort){
+                    case "hdd_capacity":
+                        return (parseInt(a.hdd_capacity || '0') > parseInt(b.hdd_capacity || '0')) ? 1 : -1;
+                    case "system_name":
+                        return ((a.system_name || '') > (b.system_name || '')) ? 1 : -1;
+                    default:
+                        return 0;
+                }
+            })
+    }
+
     return (
         <>
             <div className="filter-section">
@@ -60,11 +70,8 @@ export const DevicesPage: React.FC = () => {
                         value={selectedType}
                         onChange={handleTypeFilterSelection}
                     >
-                        {FILTERS.TYPE_OPTIONS.map(type=>{
-                            return (
-                                <option key={type.value} value={type.value}>{type.label}</option>
-                            )
-                        })}
+                        {FILTERS.TYPE_OPTIONS
+                            .map(type=><option key={type.value} value={type.value}>{type.label}</option>)}
                     </select>
                 </div>
                 <div>
@@ -73,45 +80,24 @@ export const DevicesPage: React.FC = () => {
                         value={selectedSort}
                         onChange={handleTypeSortSelection}
                     >
-                        {FILTERS.SORT_OPTIONS.map(type=>{
-                            return (
-                                <option key={type.value} value={type.value}>{type.label}</option>
-                            )
-                        })}
+                        {FILTERS.SORT_OPTIONS
+                            .map(type=><option key={type.value} value={type.value}>{type.label}</option>)}
                     </select>
                 </div>
             </div>
             <div className="add-device-container">
-                <button className="button button-green" onClick={()=>handleShowModal(ModalMethod.ADD)}>Add Device</button>
+                <button className="button button-green" onClick={()=>handleShowModal()}>Add Device</button>
             </div>
             <div>
-                {devices
-                    .filter((device) => (selectedType!=='!') ? device.type===selectedType : true)
-                    .sort((a, b) => {
-                        switch(selectedSort){
-                            case "hdd_capacity":
-                                return (parseInt(a.hdd_capacity || '0') > parseInt(b.hdd_capacity || '0')) ? 1 : -1;
-                            case "system_name":
-                                return ((a.system_name || '') > (b.system_name || '')) ? 1 : -1;
-                            default:
-                                return 0;
-                        }
-                    })
+                {filterAndSort(devices)
                     .map((device:Device)=>{
-                        const actionButtons = (
-                            <>
-                                <button className="button button-main" onClick={()=>handleShowModal(ModalMethod.EDIT, device)}>Edit</button>
-                                <button className="button button-warning" onClick={()=>handleDeleteDevice(device)}>Delete</button>
-                            </>
-                        )
                         return (
-                            <DeviceCard device={device} actionButtons={actionButtons}/>
+                            <DeviceCard device={device} openEditModal={handleShowModal} deleteDevice={handleDeleteDevice}/>
                         )
                     })}
             </div>
             <DeviceModal
                 showModal={showModal}
-                modalMethod={modalMethod}
                 selectedDevice={selectedDevice}
                 setSelectedDevice={setSelectedDevice}
                 closeModal={closeModal}

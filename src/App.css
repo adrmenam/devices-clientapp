@@ -12,6 +12,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  font-weight: bold;
 }
 
 .button {
@@ -43,7 +44,7 @@
 }
 
 .button-main {
-  background-color: #0276FF;
+  background-color: cornflowerblue;
   border: 1px solid #0276FF;
 }
 
@@ -51,31 +52,32 @@
 .button-main:active {
   background-color: white;
   background-position: 0 0;
-  color: #0276FF;
+  color: cornflowerblue;
 }
 
 .button-green {
-  background-color: #13aa52;
-  border: 1px solid #13aa52;
+  background-color: darkslateblue;
+  border: 1px solid darkslateblue;
 }
 
 .button-green:hover,
 .button-green:active {
   background-color: white;
   background-position: 0 0;
-  color: #13aa52;
+  color: darkslateblue;
 }
 
 .button-warning {
-  background: #FF4742;
-  border: 1px solid #FF4742;
+  background: indianred;
+  /*opacity: 0.5;*/
+  border: 1px solid indianred;
 }
 
 .button-warning:hover,
 .button-warning:active {
   background-color: white;
   background-position: 0 0;
-  color: #FF4742;
+  color: indianred;
 }
 
 .button-warning:active {
@@ -90,6 +92,7 @@
   justify-content: center;
   align-content: center;
   gap: 50px;
+  font-weight: bold;
 }
 
 .add-device-container {

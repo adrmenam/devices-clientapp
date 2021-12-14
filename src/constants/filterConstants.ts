@@ -1,5 +1,5 @@
 const typeOptions = [
-    { value: '!', label: 'All' },
+    { value: 'all', label: 'All' },
     { value: 'WINDOWS_WORKSTATION', label: 'Windows Workstation' },
     { value: 'WINDOWS_SERVER', label: 'Windows Server' },
     { value: 'MAC', label: 'MAC' }

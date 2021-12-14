@@ -1,12 +1,10 @@
 import React, {useState} from "react";
 import {Modal} from "./Modal/Modal";
-import {ModalMethod} from "../constants/ModalMethod";
 import {Device} from "../api/model/Device";
 import FILTERS from "../constants/filterConstants";
 import {saveDevice, updateDevice} from "../api/services/devicesService";
 
 interface IDeviceModalProps {
-    modalMethod: ModalMethod;
     selectedDevice?: Device;
     setSelectedDevice: React.Dispatch<React.SetStateAction<Device | undefined>>;
     showModal: boolean;
@@ -14,7 +12,6 @@ interface IDeviceModalProps {
 }
 
 export const DeviceModal: React.FC<IDeviceModalProps> = ({
-    modalMethod,
     selectedDevice,
     setSelectedDevice,
     showModal=false,
@@ -40,6 +37,7 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
 
     const closeAction = () => {
         resetFieldsValidation();
+        setSelectedDevice(new Device());
         closeModal();
     }
 
@@ -84,21 +82,14 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
             if(!selectedDevice.type) {
                 selectedDevice.type = FILTERS.TYPE_OPTIONS[1].value
             }
-            switch(modalMethod){
-                case ModalMethod.ADD:
-                    saveDevice(selectedDevice)
-                        .catch(()=>alert("Device save failed"))
-                        .then(() => setSelectedDevice(new Device()))
-                        .then(closeModal);
-                    break;
-                case ModalMethod.EDIT:
-                    updateDevice(selectedDevice)
-                        .catch(()=>alert("Device save failed"))
-                        .then(() => setSelectedDevice(new Device()))
-                        .then(closeModal)
-                    break;
-                default:
-                    break;
+            if(selectedDevice.id){
+                updateDevice(selectedDevice)
+                    .then(closeAction)
+                    .catch(()=>alert("Device update failed"));
+            }else{
+                saveDevice(selectedDevice)
+                    .then(closeAction)
+                    .catch(()=>alert("Device save failed"));
             }
         }
     }
@@ -108,7 +99,7 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
             <button
                 className="button button-main"
                 onClick={handleSaveDevice}
-                disabled={modalMethod !== ModalMethod.EDIT && (!isSystemNameValid || !isHddCapacityValid)}>
+                disabled={!selectedDevice?.id && (!isSystemNameValid || !isHddCapacityValid)}>
                 Save
             </button>
         </>
@@ -116,11 +107,12 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
 
     return (
         <Modal
-            title={`${modalMethod.toString()} DEVICE`}
-            children={modalChildren}
+            title={`${selectedDevice?.id ? 'EDIT': 'ADD'} DEVICE`}
             footer={modalFooter}
             show={showModal}
             closeAction={closeAction}
-        />
+        >
+            {modalChildren}
+        </Modal>
     )
 }

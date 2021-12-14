@@ -20,9 +20,7 @@ To run the client frontend app developed in React as solution to this task, clon
 ##### `npm start`
 Open [http://localhost:3001](http://localhost:3001) to view it in the browser.
 
-#### 2.1. Run tests
-To launch test runner in the interactive watch mode, run:
-##### `npm test`
+#### This app was built running on following Node and NPM versions
+  * Node: `14.18.2`
+  * NPM: `6.14.15`
 
-
-Open [http://localhost:3001](http://localhost:3001) to view it in the browser.

@@ -1,15 +1,17 @@
 import {Device} from "../../api/model/Device";
-import React, {ReactNode} from "react";
+import React from "react";
 import "./DeviceCard.css"
 
 interface IDeviceCardProps {
     device: Device
-    actionButtons?: ReactNode
+    openEditModal: (device?: Device | undefined) => void,
+    deleteDevice: (device?: Device | undefined) => void,
 }
 
 export const DeviceCard: React.FC<IDeviceCardProps> = ({
     device,
-    actionButtons
+    openEditModal,
+    deleteDevice
 }) => {
     return (
         <div className="card">
@@ -23,7 +25,8 @@ export const DeviceCard: React.FC<IDeviceCardProps> = ({
                 </div>
             </div>
             <div className="card-actions">
-                {actionButtons}
+                <button className="button button-main" onClick={()=>openEditModal(device)}>Edit</button>
+                <button className="button button-warning" onClick={()=>deleteDevice(device)}>Delete</button>
             </div>
         </div>
     )
