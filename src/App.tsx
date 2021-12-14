@@ -1,7 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import {DevicesList} from "./components/DevicesList";
+import {DevicesPage} from "./components/DevicesPage";
 
 function App() {
   return (
@@ -13,7 +12,7 @@ function App() {
           </div>
         </header>
         <main>
-          <DevicesList />
+          <DevicesPage />
         </main>
       </div>
     </div>

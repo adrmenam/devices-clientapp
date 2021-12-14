@@ -14,11 +14,11 @@ export const saveDevice = async (device: Device): Promise<any> => {
     });
 }
 
-export const updateDevice = async (id: string, device: Device): Promise<any> => {
+export const updateDevice = async (device: Device): Promise<any> => {
     return axios({
         method: 'PUT',
         headers: {'Content-Type':'application/json'},
-        url: `http://localhost:3000/devices/${id}`,
+        url: `http://localhost:3000/devices/${device.id}`,
         data: device
     });
 }
