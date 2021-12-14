@@ -8,7 +8,7 @@ import {DeviceModal} from "./DeviceModal";
 export const DevicesPage: React.FC = () => {
     const [devices, setDevices] = useState<Device[]>([]);
     const [selectedType, setSelectedType] = useState<string>(FILTERS.TYPE_OPTIONS[0].value);
-    const [selectedSort, setSelectedSort] = useState<string>();
+    const [selectedSort, setSelectedSort] = useState<string>(FILTERS.SORT_OPTIONS[0].value);
     const [selectedDevice, setSelectedDevice] = useState<Device>();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [modalMethod, setModalMethod] = useState<ModalMethod>(ModalMethod.ADD);
@@ -116,7 +116,7 @@ export const DevicesPage: React.FC = () => {
                 modalMethod={modalMethod}
                 selectedDevice={selectedDevice}
                 setSelectedDevice={setSelectedDevice}
-                onClose={closeModal}
+                closeModal={closeModal}
             />
         </>
     );

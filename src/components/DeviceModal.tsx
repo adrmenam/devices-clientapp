@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Modal} from "./Modal/Modal";
 import {ModalMethod} from "../constants/ModalMethod";
 import {Device} from "../api/model/Device";
@@ -10,7 +10,7 @@ interface IDeviceModalProps {
     selectedDevice?: Device;
     setSelectedDevice: React.Dispatch<React.SetStateAction<Device | undefined>>;
     showModal: boolean;
-    onClose: () => void;
+    closeModal: () => void;
 }
 
 export const DeviceModal: React.FC<IDeviceModalProps> = ({
@@ -18,15 +18,34 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
     selectedDevice,
     setSelectedDevice,
     showModal=false,
-    onClose
+    closeModal
 }) => {
 
+    const [isSystemNameValid, setIsSystemNameValid] = useState<boolean>(false);
+    const [isHddCapacityValid, setIsHddCapacityValid] = useState<boolean>(false);
+
     const handleSystemNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsSystemNameValid(isValidInput(event.target.value));
         setSelectedDevice({...selectedDevice, system_name: event.target.value})
     }
 
     const handleHddCapacityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsHddCapacityValid(isValidInput(event.target.value));
         setSelectedDevice({...selectedDevice, hdd_capacity: event.target.value})
+    }
+
+    const isValidInput = (input: string | number) => {
+        return (input !== '' && input != null)
+    }
+
+    const closeAction = () => {
+        resetFieldsValidation();
+        closeModal();
+    }
+
+    const resetFieldsValidation = () => {
+        setIsHddCapacityValid(false);
+        setIsSystemNameValid(false);
     }
 
     const handleDeviceTypeChange = (event:  React.ChangeEvent<HTMLSelectElement>) => {
@@ -70,13 +89,13 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
                     saveDevice(selectedDevice)
                         .catch(()=>alert("Device save failed"))
                         .then(() => setSelectedDevice(new Device()))
-                        .then(onClose);
+                        .then(closeModal);
                     break;
                 case ModalMethod.EDIT:
                     updateDevice(selectedDevice)
                         .catch(()=>alert("Device save failed"))
                         .then(() => setSelectedDevice(new Device()))
-                        .then(onClose)
+                        .then(closeModal)
                     break;
                 default:
                     break;
@@ -86,18 +105,22 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
 
     const modalFooter = (
         <>
-            <button className="button" onClick={handleSaveDevice}>Save</button>
+            <button
+                className="button"
+                onClick={handleSaveDevice}
+                disabled={modalMethod !== ModalMethod.EDIT && (!isSystemNameValid || !isHddCapacityValid)}>
+                Save
+            </button>
         </>
     )
 
     return (
-
         <Modal
             title={`${modalMethod.toString()} DEVICE`}
             children={modalChildren}
             footer={modalFooter}
             show={showModal}
-            onClose={onClose}
+            closeAction={closeAction}
         />
     )
 }

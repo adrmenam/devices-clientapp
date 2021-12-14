@@ -6,7 +6,7 @@ interface IModalProps {
     children: ReactNode
     footer: ReactNode
     show: boolean,
-    onClose: () => void
+    closeAction: () => void
 }
 
 
@@ -15,13 +15,13 @@ export const Modal: React.FC<IModalProps> = ({
     children,
     footer,
     show,
-    onClose
+    closeAction
 }) => {
     if(!show){
         return null;
     }
     return (
-        <div className="modal" onClick={onClose}>
+        <div className="modal" onClick={closeAction}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <h4 className="modal-title">{title}</h4>
@@ -31,7 +31,7 @@ export const Modal: React.FC<IModalProps> = ({
                 </div>
                 <div className="modal-footer">
                     {footer}
-                    <button className="button" onClick={onClose}>Close</button>
+                    <button className="button" onClick={closeAction}>Close</button>
                 </div>
             </div>
         </div>
