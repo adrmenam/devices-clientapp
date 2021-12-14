@@ -36,6 +36,12 @@
   vertical-align: middle;
 }
 
+.button:disabled {
+  background-color: #cccccc;
+  color: grey;
+  border: black;
+}
+
 .button-main {
   background-color: #0276FF;
   border: 1px solid #0276FF;
