@@ -1,5 +1,12 @@
 # React Devices Client App - NinjaOne
 
+## Requirements
+
+NodeJS and NPM are required to run this project:
+#### This app was built running on following Node and NPM versions
+* Node: `14.18.2`
+* NPM: `6.14.15`
+
 ## How to run this project
 
 ### 1. Backend API
@@ -22,8 +29,4 @@ Open [http://localhost:3001](http://localhost:3001) to view it in the browser.
 
 ![image](https://user-images.githubusercontent.com/13388022/146098396-d64174a7-4d2a-4ba5-98ce-ed4f35f598b6.png)
 
-
-#### This app was built running on following Node and NPM versions
-  * Node: `14.18.2`
-  * NPM: `6.14.15`
 
