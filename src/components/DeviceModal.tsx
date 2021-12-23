@@ -1,19 +1,18 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Modal} from "./Modal/Modal";
 import {Device} from "../api/model/Device";
 import FILTERS from "../constants/filterConstants";
-import {saveDevice, updateDevice} from "../api/services/devicesService";
 
 interface IDeviceModalProps {
     selectedDevice?: Device;
-    setSelectedDevice: React.Dispatch<React.SetStateAction<Device | undefined>>;
     showModal: boolean;
+    saveDeviceAction: (device: Device) => void;
     closeModal: () => void;
 }
 
 export const DeviceModal: React.FC<IDeviceModalProps> = ({
     selectedDevice,
-    setSelectedDevice,
+    saveDeviceAction,
     showModal=false,
     closeModal
 }) => {
@@ -21,23 +20,43 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
     const [isSystemNameValid, setIsSystemNameValid] = useState<boolean>(false);
     const [isHddCapacityValid, setIsHddCapacityValid] = useState<boolean>(false);
 
+    const [ systemName, 	setSystemName 	] = useState<string>('');
+    const [ type, 			setType 		] = useState<string>(FILTERS.TYPE_OPTIONS[1].value);
+    const [ hddCapacity, 	setHddCapacity 	] = useState<string>('');
+
+    useEffect(()=>{
+        if(selectedDevice){
+            setType(selectedDevice?.type || FILTERS.TYPE_OPTIONS[1].value);
+            setSystemName(selectedDevice?.system_name || '');
+            setHddCapacity(selectedDevice?.hdd_capacity || '');
+        }
+
+        if(selectedDevice?.id){
+            setIsSystemNameValid(true);
+            setIsHddCapacityValid(true);
+        }
+    }, [selectedDevice])
+
+    const isValidHddCapacityNumber = (value: string) => {
+        return Number(value) >= 0 && !value.includes('.');
+    }
+
     const handleSystemNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsSystemNameValid(isValidInput(event.target.value));
-        setSelectedDevice({...selectedDevice, system_name: event.target.value})
+        setSystemName(event.target.value);
     }
 
     const handleHddCapacityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsHddCapacityValid(isValidInput(event.target.value));
-        setSelectedDevice({...selectedDevice, hdd_capacity: event.target.value})
+        setIsHddCapacityValid(isValidInput(event.target.value) && isValidHddCapacityNumber(event.target.value));
+        setHddCapacity(event.target.value);
     }
 
     const isValidInput = (input: string | number) => {
-        return (input !== '' && input != null)
+        return (input !== '' && input != null && input.toString().trim() !== '')
     }
 
     const closeAction = () => {
         resetFieldsValidation();
-        setSelectedDevice(new Device());
         closeModal();
     }
 
@@ -47,20 +66,20 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
     }
 
     const handleDeviceTypeChange = (event:  React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedDevice({...selectedDevice, type: event.target.value})
+        setType(event.target.value);
     }
 
     const modalChildren =  (
             <>
                 <p>
                     <span className="modal-label">System Name *: </span>
-                    <input value={selectedDevice?.system_name}
+                    <input value={systemName}
                            onChange={handleSystemNameChange} />
                 </p>
                 <p>
                     <span className="modal-label">Type *: </span>
                     <select
-                        value={selectedDevice?.type || FILTERS.TYPE_OPTIONS[1].value}
+                        value={type}
                         onChange={handleDeviceTypeChange}
                     >
                         {FILTERS.TYPE_OPTIONS.filter(type => type.value!=='all').map(type=>{
@@ -72,26 +91,13 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
                 </p>
                 <p>
                     <span className="modal-label">HDD Capacity (GB) *: </span>
-                    <input type="number" value={selectedDevice?.hdd_capacity} onChange={handleHddCapacityChange} />
+                    <input type="number" min="0" value={hddCapacity} onChange={handleHddCapacityChange} />
                 </p>
             </>
         )
 
-    const handleSaveDevice = async () => {
-        if(selectedDevice){
-            if(!selectedDevice.type) {
-                selectedDevice.type = FILTERS.TYPE_OPTIONS[1].value
-            }
-            if(selectedDevice.id){
-                updateDevice(selectedDevice)
-                    .then(closeAction)
-                    .catch(()=>alert("Device update failed"));
-            }else{
-                saveDevice(selectedDevice)
-                    .then(closeAction)
-                    .catch(()=>alert("Device save failed"));
-            }
-        }
+    const handleSaveDevice = () => {
+        saveDeviceAction({id: selectedDevice?.id || undefined, system_name: systemName, type: type, hdd_capacity: hddCapacity});
     }
 
     const modalFooter = (
@@ -99,7 +105,7 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
             <button
                 className="button button-main"
                 onClick={handleSaveDevice}
-                disabled={!selectedDevice?.id && (!isSystemNameValid || !isHddCapacityValid)}>
+                disabled={!isSystemNameValid || !isHddCapacityValid}>
                 Save
             </button>
         </>
