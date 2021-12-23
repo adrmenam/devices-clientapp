@@ -20,9 +20,9 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
     const [isSystemNameValid, setIsSystemNameValid] = useState<boolean>(false);
     const [isHddCapacityValid, setIsHddCapacityValid] = useState<boolean>(false);
 
-    const [ systemName, 	setSystemName 	] = useState<string>('');
-    const [ type, 			setType 		] = useState<string>(FILTERS.TYPE_OPTIONS[1].value);
-    const [ hddCapacity, 	setHddCapacity 	] = useState<string>('');
+    const [systemName, setSystemName] = useState<string>('');
+    const [type, setType] = useState<string>(FILTERS.TYPE_OPTIONS[1].value);
+    const [hddCapacity, setHddCapacity] = useState<string>('');
 
     useEffect(()=>{
         if(selectedDevice){
@@ -97,7 +97,7 @@ export const DeviceModal: React.FC<IDeviceModalProps> = ({
         )
 
     const handleSaveDevice = () => {
-        saveDeviceAction({id: selectedDevice?.id || undefined, system_name: systemName, type: type, hdd_capacity: hddCapacity});
+        saveDeviceAction({id: selectedDevice?.id, system_name: systemName, type: type, hdd_capacity: hddCapacity});
     }
 
     const modalFooter = (
